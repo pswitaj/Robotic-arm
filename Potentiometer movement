@@ -1,0 +1,54 @@
+#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
+
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+
+#define SERVOMIN  125 
+#define SERVOMAX  575 
+
+uint8_t servonum = 0;
+int pos = 0;
+int spd = 2;
+int potpin0 = 0;  // top
+int val0;
+int potpin1 = 1;  // second
+int val1; 
+int potpin2 = 2;  // third
+int val2; 
+int potpin3 = 3;  // fourth
+int val3; 
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println("16 channel Servo test!");
+
+  pwm.begin();
+  
+  pwm.setPWMFreq(50);  
+}
+
+void loop() {
+  val0 = analogRead(potpin0);           
+  val0 = map(val0, 0, 1023, 0, 180);
+  val1 = analogRead(potpin1);       
+  val1 = map(val1, 0, 1023, 0, 180);
+  val2 = analogRead(potpin2);       
+  val2 = map(val2, 0, 1023, 45, 180);
+  val3 = analogRead(potpin3);        
+  val3 = map(val3, 0, 1023, 0, 135);
+  
+  
+pwm.setPWM(0, 0, angleToPulse(val0) );
+pwm.setPWM(1, 0, angleToPulse(val1) );
+pwm.setPWM(2, 0, angleToPulse(val2) );
+pwm.setPWM(3, 0, angleToPulse(val3) );
+
+  delay(15);
+ }
+
+int angleToPulse(int ang){
+   int pulse = map(ang,0, 180, SERVOMIN,SERVOMAX);// map angle of 0 to 180 to Servo min and Servo max 
+   Serial.print("Angle: ");Serial.print(ang);
+   Serial.print(" pulse: ");Serial.println(pulse);
+   return pulse;
+}
